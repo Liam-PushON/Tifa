@@ -1,0 +1,9 @@
+<module>
+    <config>
+        <dependancies>
+            <dependancy>Tifa_database</dependancy>
+            <dependancy>Tifa_layout</dependancy>
+        </dependancies>
+        <load_without_dependancies>true</load_without_dependancies>
+    </config>
+</module>

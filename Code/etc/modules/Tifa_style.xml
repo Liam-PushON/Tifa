@@ -1,0 +1,10 @@
+<module>
+    <config>
+        <Tifa_style>
+            <version>0.1</version>
+            <location>Core</location>
+            <active>true</active>
+            <name>style</name>
+        </Tifa_style>
+    </config>
+</module>

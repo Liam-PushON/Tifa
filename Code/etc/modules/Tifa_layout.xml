@@ -1,0 +1,10 @@
+<module>
+    <config>
+        <Tifa_layout>
+            <version>0.1</version>
+            <location>Core</location>
+            <active>true</active>
+            <name>layout</name>
+        </Tifa_layout>
+    </config>
+</module>

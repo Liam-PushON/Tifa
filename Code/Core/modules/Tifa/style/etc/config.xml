@@ -1,0 +1,7 @@
+<module>
+    <config>
+        <dependancies>
+            <dependancy>Tifa_theme</dependancy>
+        </dependancies>
+    </config>
+</module>

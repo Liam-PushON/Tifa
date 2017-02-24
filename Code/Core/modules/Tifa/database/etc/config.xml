@@ -1,0 +1,6 @@
+<module>
+    <config>
+        <dependancies></dependancies>
+        <load_without_dependancies>true</load_without_dependancies>
+    </config>
+</module>
