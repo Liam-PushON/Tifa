@@ -1,7 +1,7 @@
 <?php
 
 class database{
-    function test(){
-        echo 'test';
+    function init(){
+
     }
 }

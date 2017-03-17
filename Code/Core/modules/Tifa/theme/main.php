@@ -1,7 +1,7 @@
 <?php
 
 class theme{
-    function test(){
-        echo 'test';
+    function init(){
+
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 class style{
-    function test(){
-        echo 'test';
+    function init(){
+
     }
 }

@@ -4,65 +4,49 @@ final class Tifa {
     public static $modules = array();
 
     public function init() {
-        $inactive_modules = array();
-        $unloaded_modules = array();
-        $loaded_modules = array();
-        $module_path = 'Code/etc/modules/';
-        $module_dir = scandir($module_path);
-        foreach($module_dir as $module){
-            if(!is_dir($module)){
-                $xml = simplexml_load_file($module_path . $module);
-                if(self::isModuleActive($xml)){
-                    if(self::checkModuleDependancies($xml)){
-                        echo 'Loaded: '.$module.'<br>';
-                    }
-                }else{
-                    array_push($inactive_modules, self::getModuleNameSpace($xml));
-                }
-            }
-        }
+        self::loadCoreModules();
+        self::initCoreModules();
+        self::loadClientModules();
+    }
+
+    private function loadCoreModules() {
+        $core_modules = scandir($core_module_path = 'Code/Core/etc/modules/');
+        foreach ($core_modules as $core_module):
+            if (!is_dir($core_module)):
+                $xml = simplexml_load_file($core_module_path . $core_module);
+                if($xml):
+                    self::loadCoreModule($xml);
+                endif;
+            endif;
+        endforeach;
+    }
+
+    private function loadCoreModule($module_xml) {
+        $module_config = self::getModuleConfig($module_xml);
+        include($main_path = 'Code/'.$module_xml->config->children()[0]->location.'/modules/'.self::getModuleNamespace($module_xml).'/main.php');
+        $name = (string)$module_xml->config->children()[0]->name;
+        self::$modules[(string)$module_xml->config->children()[0]->getName()] = new $name();
+    }
+
+    private function initCoreModules(){
+        foreach (self::$modules as $module):
+            $module->init();
+        endforeach;
     }
 
 
-    private function loadModule($xml) {
-
+    private function getModuleConfig($module_xml){
+        $config_path = 'Code/'.$module_xml->config->children()[0]->location.'/modules/'.self::getModuleNamespace($module_xml).'/etc/config.xml';
+        return simplexml_load_file($config_path);
     }
 
-    private function isModuleActive($xml){
-        return $xml->config->children()[0]->active == 'true' ? true : false;
+    private function getModuleNamespace($module_xml){
+        return str_replace('_', '/', $module_xml->config->children()[0]->getName());
     }
 
-    private function getModuleNameSpace($xml){
-        return isset($xml->config->children()[0]) ? $xml->config->children()[0]->getName() : 'null';
+    private function loadClientModules() {
+
     }
-
-    private function getModulePath($xml){
-        return 'Code/'.$xml->config->children()[0]->location.'/modules/' . str_replace('_', '/', self::getModuleNameSpace($xml));
-    }
-
-    private function checkModuleDependancies($xml){
-        $config = self::getModuleConfig($xml);
-        if(isset($config->config->load_without_dependancies) && $config->config->load_without_dependancies == 'true'){
-            return true;
-        }
-        foreach($config->config->dependancies->dependancy as $dependancy){
-            $dep_xml = simplexml_load_file('Code/etc/modules/'.$dependancy.'.xml');
-            if(!self::isModuleActive($dep_xml)){
-                return false;
-            }
-            $dep_config  =self::getModuleConfig($dep_xml);
-            if(!isset(self::$modules[$dep_config->config->children()[0]->getName()])){
-                return false;
-            }
-            return true;
-        }
-    }
-
-
-    function getModuleConfig($xml){
-        return simplexml_load_file(self::getModulePath($xml).'/etc/config.xml');
-    }
-
 
     public static function _get($get) {
         return isset(self::$modules[$get]) ? self::$modules[$get] : false;
